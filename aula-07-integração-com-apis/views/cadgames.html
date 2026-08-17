@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <h2>Cadastrar Jogo</h2>
+    <hr>
+
+    <form action="{{url_for('cadgames')}}" method="post">
+  <label for="name">Título:</label>
+  <input type="text" name="titulo" placeholder="Insira o nome do jogo" class="form-control" required>
+  <label for="name">Ano:</label>
+  <input type="text" name="ano" placeholder="Insira o ano de lançamento do jogo" class="form-control" required>
+  <label for="name">Gênero:</label>
+  <input type="text" name="genero" placeholder="Insira o gênero do jogo" class="form-control" required>
+  <br>
+  <input type="submit" value="Cadastrar" class="btn btn-success">
+  <input type="reset" value="Limpar" class="btn btn-outline-danger">
+</form>
+
+<br>
+<hr>
+
+    <h2>Jogos Cadastrados</h2>
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Título</th>
+            <th>Ano</th>
+            <th>Gênero</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for game in listaGames %}
+        <tr>
+            <td>{{game.titulo}}</td>
+            <td>{{game.ano}}</td>
+            <td>{{game.genero}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</main>
+{% endblock content %}
