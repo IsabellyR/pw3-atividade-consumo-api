@@ -12,6 +12,12 @@ DB_NAME = 'thegames'
 app.config['DATABASE_NAME'] = DB_NAME
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@localhost/{DB_NAME}'
 
+# DEFININDO UMA CHAVE SECRETA (flash messages e sessões)
+app.config['SECRET_KEY'] = 'meusegredo'
+
+# DEFININDO O TEMPO DA SESSÃO
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # 1 hora
+
 # Enviando a variavel app para as rotas
 routes.init_app(app)
 

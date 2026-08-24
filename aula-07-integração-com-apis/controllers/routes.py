@@ -1,7 +1,7 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, redirect, flash, session
 
 from models.database import Game, db, Console, Usuario
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 #importando a biblioteca urllib
 import urllib.request #permite enviar requisições prar uma url
 #importando a biblioteca json
@@ -11,6 +11,21 @@ import json #converte dados de dicionario para json e vice-versa
 # Criando a função para receber o Flask (app)
 
 def init_app(app):
+    #CRIANDO FUNÇÃO DE MIDDLEWARE (ROTAS QUE PRECISAM DE LOGIN OU NÃO)
+    @app.before_request
+    def check_auth():
+        # ROTAS QUE NÃO PRECISAM DE AUTENTICAÇÃO
+        rotasPermitidas = ['home', 'login', 'cadastro', 'static']
+        
+        #se a rota da requisição não requer uma autentificação permitir o acesso
+        if request.endpoint in rotasPermitidas:
+            #prossiga
+            return
+        #Se o usuario não estiver logado e tentar acessar uma rota protegida 
+        if 'usuario_id' not in session:
+            return redirect(url_for('login'))
+    
+    
     # Simulando um Banco de Dados
     listaGames = [{"titulo": "CS-GO", "ano": 2012, "genero": "FPS"}]
 
@@ -159,7 +174,40 @@ def init_app(app):
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
-        return "bem-vindo a página de login!"
+        # VERIFICANDO SE O MÉTODO É POST
+        if request.method == 'POST':
+            # COLETANDO OS DADOS DO USUÁRIO
+            email = request.form['email']
+            senha = request.form['senha']
+            # BUSCANDO O USUÁRIO NO BANCO
+            usuario = Usuario.query.filter_by(email=email).first()
+            # SE O USUARIO EXISTIR
+            if usuario:
+                # VERIFICANDO A SENHA (hash)
+                if check_password_hash(usuario.senha, senha):
+                    # AQUI SERÁ CRIADO A SESSÃO
+                    session['usuario_id'] = usuario.id
+                    session['usuario_email'] = usuario.email
+                    # Mensagem de Feedback
+                    msgLogin = "Você foi autenticado com sucesso! Bem-vindo!"
+                    flash(msgLogin, 'success')
+                    return redirect(url_for('home')) 
+                # CASO SENHA INCORRETA          
+                else:
+                    flash('Falha no login. Verifique os dados e tente novamente!', 'danger')
+                    return redirect(url_for('login'))
+            # SE O USUÁRIO NÃO FOR ENCONTRADO
+            else:
+                flash('O usuário informado não existe!', 'danger')
+                return redirect(url_for('login'))                
+        return render_template('login.html')
+    
+    #ROTA DE LOGOUT
+    @app.route('/logout', methods=['GET', 'POST'])
+    def logout():
+        #destruindo a sessão do usuario
+        session.clear()
+        return redirect(url_for('home'))
 
    #ROTA DE CONSUMO DA API
     @app.route('/apigames', methods=['GET', 'POST'])
