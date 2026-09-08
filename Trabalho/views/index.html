@@ -1,0 +1,22 @@
+<!-- Importando o template base -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+
+    <h1>Bem-vindo ao InfoPiece!</h1>
+
+    <h3>Seu site favorito de One Piece!</h3>
+
+    <hr>
+
+    <img
+        src="{{ url_for('static', filename='imgs/one piece.jpg') }}"
+        alt="One Piece"
+        width="720px"
+    >
+
+</main>
+
+{% endblock content %}

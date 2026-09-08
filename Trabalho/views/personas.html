@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main>
+
+    <h1>Personagens em destaque</h1>
+    <hr>
+    <ul>
+        <li>Nome: {{ nome }}</li>
+        <li>Idade: {{ idade }}</li>
+        <li>Gênero: {{ genero }}</li>
+    </ul>
+    <p>
+        O personagem {{ nome }} tem {{ idade }} anos.
+    </p>
+    <h3>Personagens</h3>
+    <ol>
+        
+        {% for personagem in listaPersonagens %}
+            <li>
+                {{ personagem.nome }} - {{ personagem.idade }} anos
+            </li>
+        {% endfor %}
+    </ol>
+    <hr>
+    <h3>Personagem em destaque:</h3>
+
+    {% for chave, valor in personagem.items() %}
+
+        <details>
+            <summary>{{ chave }}</summary>
+            <li>{{ valor }}</li>
+        </details>
+
+    {% endfor %}
+</main>
+{% endblock content %}

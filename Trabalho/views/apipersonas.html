@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row">
+
+        {% for personagem in listaPersonagens %}
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                <img
+                    src="{{ personagem.image_url }}"
+                    class="card-img-top"
+                    alt="{{ personagem.name.en }}"
+                    style="height: 300px; object-fit: cover;"
+                >
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ personagem.name.en }}
+                    </h5>
+
+                    {% if personagem.age %}
+                        <p class="card-text">
+                            Idade: {{ personagem.age }}
+                        </p>
+                    {% else %}
+                        <p class="card-text">
+                            Idade: Desconhecida
+                        </p>
+                    {% endif %}
+
+                    <a
+                        href="{{ url_for('apipersonas', id=personagem.id) }}"
+                        class="btn btn-dark"
+                    >
+                        + Info
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock content %}

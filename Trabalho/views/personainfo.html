@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+
+            <a href="{{ url_for('apipersonas') }}" class="btn btn-dark mb-4">
+                ← Voltar para lista
+            </a>
+
+            <div class="card shadow">
+
+                {% if personagemInfo.image_url %}
+
+                <img
+                    src="{{ personagemInfo.image_url }}"
+                    class="card-img-top"
+                    alt="{{ personagemInfo.name.en }}"
+                    style="height: 500px; object-fit: contain;"
+                >
+                {% endif %}
+                <div class="card-body">
+                    <h1 class="card-title">
+                        {{ personagemInfo.name.en }}
+                    </h1>
+                    <hr>
+
+
+                    {% if personagemInfo.name.jp %}
+                    <p>
+                        <strong>Nome em japonês:</strong>
+                        {{ personagemInfo.name.jp }}
+                    </p>
+                    {% endif %}
+
+
+                    {% if personagemInfo.name.romaji %}
+                    <p>
+                        <strong>Nome em Romaji:</strong>
+                        {{ personagemInfo.name.romaji }}
+                    </p>
+                    {% endif %}
+
+                    {% if personagemInfo.age %}
+
+                    <p>
+                        <strong>Idade:</strong>
+                        {{ personagemInfo.age }}
+                    </p>
+
+                    {% endif %}
+                    {% if personagemInfo.blood_type %}
+
+                    <p>
+                        <strong>Tipo sanguíneo:</strong>
+                        {{ personagemInfo.blood_type }}
+                    </p>
+                    {% endif %}
+
+                    {% if personagemInfo.birthday %}
+                    <p>
+                        <strong>Aniversário:</strong>
+
+                        {% if personagemInfo.birthday.label %}
+
+                            {{ personagemInfo.birthday.label.en }}
+
+                        {% else %}
+
+                            Dia {{ personagemInfo.birthday.day }}
+                            -
+                            Mês {{ personagemInfo.birthday.month }}
+                        {% endif %}
+                    </p>
+                    {% endif %}
+
+                    {% if personagemInfo.extra_data %}
+                    <hr>
+                    <h4>Informações adicionais</h4>
+
+                    {% for chave, valor in personagemInfo.extra_data.items() %}
+
+                    <p>
+                        <strong>
+                            {{ chave
+                                |replace('_', ' ')
+                                |capitalize
+                            }}:
+                        </strong>
+                        {{ valor }}
+                    </p>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if personagemInfo.bounties %}
+                    <hr>
+                    <h4>Recompensas</h4>
+                    {% if personagemInfo.bounties is mapping %}
+                    <p>
+                        <strong>Valor:</strong>
+                        {{ "{:,}".format(
+                            personagemInfo.bounties.amount
+                        ).replace(",", ".") }}
+                        ฿
+                    </p>
+                    <p>
+                        <strong>Recompensa ativa:</strong>
+                        {% if personagemInfo.bounties.is_active %}
+                            Sim
+                        {% else %}
+                            Não
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Criada em:</strong>
+                        {{ personagemInfo.bounties.created_at
+                            .replace('T', ' ')
+                            .split('.')[0]
+                        }}
+                    </p>
+
+                    {% else %}
+
+                    {% for recompensa in personagemInfo.bounties %}
+
+                    <div class="mb-3">
+                        <p>
+                            <strong>Valor:</strong>
+                            {{ "{:,}".format(
+                                recompensa.amount
+                            ).replace(",", ".") }}
+                            ฿
+                        </p>
+                        <p>
+                            <strong>Recompensa ativa:</strong>
+                            {% if recompensa.is_active %}
+                                Sim
+                            {% else %}
+                                Não
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>Criada em:</strong>
+
+                            {{ recompensa.created_at
+                                .replace('T', ' ')
+                                .split('.')[0]
+                            }}
+                        </p>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
